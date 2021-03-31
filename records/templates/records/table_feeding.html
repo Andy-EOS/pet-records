@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+{% load static %}
+<link href="{% static 'records/css/bootstrap.min.css' %}" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+<title>{{title}}</title>
+</head>
+<body>
+{% include 'records/navbar.html' %}
+
+{% csrf_token %}
+{% load crispy_forms_tags %}
+{% crispy form %}
+
+<div class="container-fluid">
+  <div class="row" style="background-color:grey">
+    <div class="col">
+      Date:
+    </div>
+    <div class="col">
+      Name:
+    </div>
+    <div class="col">
+      Details:
+    </div>
+    <div class="col">
+      Edit:
+    </div>
+  </div>
+  {% for date_text, animal, details, URL, id in feeding_table_entries %}
+  <div class="row" style="background-color:{% if forloop.counter|divisibleby:2 %}Gainsboro{% else %}Ghostwhite{% endif %}">
+    <div class="col">
+      {{date_text}}
+    </div>
+    <div class="col">
+      {{animal}}
+    </div>
+    <div class="col">
+      {{details}}
+    </div>
+    <div class="col">
+      <a href={% url URL feeding_id=id %}>edit</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<script src="{% static 'records/js/bootstrap.bundle.min.js' %}" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+</body>
+</html>

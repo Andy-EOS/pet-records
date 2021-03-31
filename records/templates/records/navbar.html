@@ -1,0 +1,39 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand">Pet Records</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Animal Overview</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'feeding_records' %}">Feeding Records</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'cleaning_records' %}">Cleaning Records</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'health_records' %}">Health Records</a>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Enter Data
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            {% load records_navbar %}
+            {% list_animal_types as types_of_animal %}
+            {% for text, URL in types_of_animal %}
+            <li><a class="dropdown-item" href="{% url URL %}">{{text}}</a></li>
+            {% endfor %}
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'cleaning_entry' %}">Cleaning</a></li>
+            <li><a class="dropdown-item" href="{% url 'health_entry' %}">Health</a></li>
+          </ul>
+        </li>
+    </div>
+  </div>
+</nav>
