@@ -295,7 +295,7 @@ class GeckoFeeding(models.Model):
     animal = models.ForeignKey(Gecko,on_delete=models.CASCADE)
     feeding_date = models.DateField()
     quantity_given = models.IntegerField()
-    quantity_eaten = models.IntegerField(null=True)
+    quantity_eaten = models.IntegerField(null=True,blank=True)
 
     MEALWORMS = 'MW'
 
@@ -336,7 +336,12 @@ class GeckoFeeding(models.Model):
         for dusting_code, dusting_text in self.FOOD_COATING_CHOICES:
             if dusting_code == self.coating:
                 food_dusting_text = dusting_text
-        output = f"Given: {self.quantity_given} {food_type_text}. Dusted in {food_dusting_text} \nEaten: {self.quantity_eaten}."
+        if self.quantity_eaten == None:
+            quantity_eaten = "Not Recorded"
+        else:
+            quantity_eaten = self.quantity_eaten
+        
+        output = f"Given: {self.quantity_given} {food_type_text}. Dusted in {food_dusting_text} \nEaten: {quantity_eaten}."
         return output
 
     def table_entry(self):
