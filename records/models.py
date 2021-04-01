@@ -62,6 +62,8 @@ class Snake(Animal):
             return "No feedings recorded."
     
     def get_feeding_due(self):
+        if self.get_last_fed() == "No feedings recorded.":
+            return "Never fed."
         feeding_due_date = self.get_last_fed() + timedelta(days=self.feeding_frequency)
         d = str(feeding_due_date.day).rjust(2,'0')
         m = str(feeding_due_date.month).rjust(2,'0')
@@ -86,7 +88,7 @@ class Snake(Animal):
         if feedings:
             return feedings[0].date_cleaned
         else:
-            return "No feedings recorded."
+            return "No cleaning recorded."
     
     def get_clean_due(self):
         if self.get_last_cleaned() == "No cleaning recorded.":
@@ -155,6 +157,8 @@ class Gecko(Animal):
             return "No feedings recorded."
     
     def get_feeding_due(self):
+        if self.get_last_fed() == "No feedings recorded.":
+            return "Never Fed."
 
         due_date = get_next_day(date.today(), self.feeding_day)
 
