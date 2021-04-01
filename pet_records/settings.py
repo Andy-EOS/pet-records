@@ -127,6 +127,7 @@ DATE_INPUT_FORMATS = ('%d-%m-%Y','%Y-%m-%d')
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = machine_settings.STATIC_ROOT
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
