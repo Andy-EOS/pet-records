@@ -82,7 +82,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'HOST' : '',
         'NAME' : 'petrecords',
-        'USER': 'djangouser',
+        'USER': machine_settings.DATABASE_USER,
         'PASSWORD' : machine_settings.DATABASE_PASSWORD,
     }
 }
