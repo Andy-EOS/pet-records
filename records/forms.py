@@ -130,7 +130,9 @@ class AnimalHealthForm(ModelForm):
             'animal',
             'date',
             'weight',
+            'shed',
             'food_regurgitated',
+            'food_refused',
             'comments',
         )
         widgets = {

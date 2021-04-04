@@ -391,7 +391,9 @@ class AnimalHealth(models.Model):
     animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
     date = models.DateField()
     weight = models.IntegerField("Weight (grams)",blank=True, null=True)
-    food_regurgitated = models.BooleanField()
+    food_regurgitated = models.BooleanField(default=False)
+    shed = models.BooleanField(default=False)
+    food_refused = models.BooleanField(default=False)
     comments = models.CharField(max_length=10000,blank=True, null=True)
 
     def get_date(self):
@@ -408,9 +410,19 @@ class AnimalHealth(models.Model):
         weight = "N/A"
         if self.weight:
             weight = f"{self.weight}g"
+
         regurgitated = "N/A"
         if self.food_regurgitated:
             regurgitated = "Regurgitated"
+
+        shed = "N/A"
+        if self.shed:
+            shed = "Shed"
+
+        refused = "N/A"
+        if self.food_refused:
+            refused = "Refused Food"
+
         comments = "N/A"
         if self.comments:
             comments = self.comments
@@ -419,9 +431,12 @@ class AnimalHealth(models.Model):
             self.date_text(),
             self.animal.animal_name,
             weight,
+            shed,
+            refused,
             regurgitated,
             comments,
-            f"edit_health_entry", self.id
+            f"edit_health_entry",
+            self.id,
             )
 
 

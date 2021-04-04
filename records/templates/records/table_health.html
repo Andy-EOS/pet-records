@@ -24,6 +24,12 @@
       Weight:
     </div>
     <div class="col">
+      Shed:
+    </div>
+    <div class="col">
+      Refused:
+    </div>
+    <div class="col">
       Regurgitated:
     </div>
     <div class="col">
@@ -33,7 +39,7 @@
       Edit:
     </div>
   </div>
-  {% for date_text, animal, wieght, regurgitated, comments, URL, id in health_table_entries %}
+  {% for date_text, animal, wieght, shed, refused, regurgitated, comments, URL, id in health_table_entries %}
   <div class="row" style="background-color:{% if forloop.counter|divisibleby:2 %}Gainsboro{% else %}Ghostwhite{% endif %}">
     <div class="col">
       {{date_text}}
@@ -43,6 +49,12 @@
     </div>
     <div class="col">
       {{wieght}}
+    </div>
+    <div class="col">
+      {{shed}}
+    </div>
+    <div class="col">
+      {{refused}}
     </div>
     <div class="col">
       {{regurgitated}}
