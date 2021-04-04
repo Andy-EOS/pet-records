@@ -407,23 +407,23 @@ class AnimalHealth(models.Model):
         return f"{d}/{m}/{y}"
 
     def table_entry(self):
-        weight = "N/A"
+        weight = ""
         if self.weight:
             weight = f"{self.weight}g"
 
-        regurgitated = "N/A"
+        regurgitated = ""
         if self.food_regurgitated:
             regurgitated = "Regurgitated"
 
-        shed = "N/A"
+        shed = ""
         if self.shed:
             shed = "Shed"
 
-        refused = "N/A"
+        refused = ""
         if self.food_refused:
             refused = "Refused Food"
 
-        comments = "N/A"
+        comments = ""
         if self.comments:
             comments = self.comments
 
