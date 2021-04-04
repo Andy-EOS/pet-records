@@ -220,15 +220,6 @@ def cleaning_records(request):
     }
 
 
-#    form = CleaningFilterForm(initial={
-#        'name':names,
-#        'date_from': date.today() - timedelta(weeks=12),
-#        'date_to': date.today(),
-#        'clean_type': clean_type
-#    })
-
-
-
     if request.method == 'POST':
 
         if 'name' in request.POST:
@@ -283,7 +274,7 @@ def health_records(request):
     for name in names:
         names_list.append((name, name))
 
-    form = CleaningFilterForm()
+    form = BasicFilterForm()
     form.fields['name'].choices = names_list
     form.initial = {
         'name':names,
@@ -291,11 +282,6 @@ def health_records(request):
         'date_to': date.today(),
     }
 
-#    form = BasicFilterForm(initial={
-#        'name':names,
-#        'date_from': date.today() - timedelta(weeks=12),
-#        'date_to': date.today(),
-#    })
 
     if request.method == 'POST':
 
