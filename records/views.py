@@ -278,7 +278,7 @@ def health_records(request):
     form.fields['name'].choices = names_list
     form.initial = {
         'name':names,
-        'date_from': date.today() - timedelta(weeks=12),
+        'date_from': date.today() - timedelta(weeks=26),
         'date_to': date.today(),
     }
 
