@@ -48,6 +48,21 @@ class Snake(Animal):
     _type = models.CharField(max_length=2,default='SN')
     feeding_frequency = models.IntegerField("Feeding Frequency (days)", default = 14)
 
+    def __eq__(self, other):
+        if type(other) != Snake:
+            return False
+        if self.animal_name != other.animal_name:
+            return False
+        if self.animal_dob != other.animal_dob:
+            return False
+        if self.cleaning_frequency != other.cleaning_frequency:
+            return False
+        if self._type != other._type:
+            return False
+        if self.feeding_frequency != other.feeding_frequency:
+            return False
+        return True
+
     def get_animal_type(self):
         return self._type
 
@@ -162,7 +177,6 @@ class Gecko(Animal):
 
         due_date = get_next_day(date.today(), self.feeding_day)
 
-        #due_in = (due_date - date.today()).days
         due_in = self.get_feeding_due_in()
 
         d = str(due_date.day).rjust(2,'0')
@@ -185,11 +199,13 @@ class Gecko(Animal):
 
         first_feed = get_next_day(self.feedings_started, self.feeding_day)
 
+        due_date = get_next_day(date.today(), self.feeding_day)
+
         coating_patters = ['RP','CA','CA','NO']
 
-        weeks_since = ceil((date.today() - first_feed).days/7)
+        weeks_since = ceil((due_date - first_feed).days/7)
 
-        index = 3-((4 + weeks_since) % len(coating_patters))
+        index = weeks_since % len(coating_patters)
 
         code = coating_patters[index]
 
