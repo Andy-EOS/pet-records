@@ -97,6 +97,8 @@ def gecko_feeding_entry(request, feeding_id=None):
             return redirect('feeding_records')
     else:
         form = GeckoFeedingForm(instance=instance)
+        if not feeding_id:
+            form.initial['feeding_date'] = date.today()
 
         context = {
             'title': 'Gecko Feeding Entry',
@@ -111,6 +113,12 @@ def feeding_records(request):
 
     names = list(map(lambda animal: animal.animal_name, Animal.objects.all()))
 
+    default_filter_from_date = date.today() - timedelta(weeks=12)
+    if request.method != 'POST':
+        query1 = query1.filter(feeding_date__gte=default_filter_from_date)
+        query2 = query2.filter(feeding_date__gte=default_filter_from_date)
+
+
     names_list = []
     for name in names:
         names_list.append((name, name))
@@ -119,7 +127,7 @@ def feeding_records(request):
     form.fields['name'].choices = names_list
     form.initial = {
         'name':names,
-        'date_from': date.today() - timedelta(weeks=12),
+        'date_from': default_filter_from_date,
         'date_to': date.today(),
     }
 
@@ -172,6 +180,8 @@ def cleaning_entry(request, cleaning_id=None):
             return redirect('cleaning_records')
     else:
         form = AnimalCleaningForm(instance=instance)
+        if not cleaning_id:
+            form.initial['date_cleaned'] = date.today()
 
         context = {
             'title': f'Animal Cleaning Entry {cleaning_id}',
@@ -190,6 +200,8 @@ def healthy_entry(request, health_id=None):
             return redirect('health_records')
     else:
         form = AnimalHealthForm(instance=instance)
+        if not health_id:
+            form.initial['date'] = date.today()
 
         context = {
             'title': f'Animal Health Entry {health_id}',
@@ -210,15 +222,18 @@ def cleaning_records(request):
     for name in names:
         names_list.append((name, name))
 
+    default_filter_from_date = date.today() - timedelta(weeks=12)
+    if request.method != 'POST':
+        query = query.filter(date_cleaned__gte=default_filter_from_date)
+
     form = CleaningFilterForm()
     form.fields['name'].choices = names_list
     form.initial = {
         'name':names,
-        'date_from': date.today() - timedelta(weeks=12),
+        'date_from': default_filter_from_date,
         'date_to': date.today(),
         'clean_type': clean_type
     }
-
 
     if request.method == 'POST':
 
@@ -274,11 +289,15 @@ def health_records(request):
     for name in names:
         names_list.append((name, name))
 
+    default_filter_from_date = date.today() - timedelta(weeks=26)
+    if request.method != 'POST':
+        query = query.filter(date__gte=default_filter_from_date)
+
     form = BasicFilterForm()
     form.fields['name'].choices = names_list
     form.initial = {
         'name':names,
-        'date_from': date.today() - timedelta(weeks=26),
+        'date_from': default_filter_from_date,
         'date_to': date.today(),
     }
 
