@@ -175,7 +175,7 @@ class Gecko(Animal):
         if self.get_last_fed() == "No feedings recorded.":
             return "Never Fed."
 
-        due_date = get_next_day(date.today(), self.feeding_day)
+        due_date = get_next_day(self.get_last_fed(), self.feeding_day)
 
         due_in = self.get_feeding_due_in()
 
@@ -186,11 +186,13 @@ class Gecko(Animal):
 
         if due_in == 0:
             return f"Feeding due Today (Dusting: {self.get_coating()})."
-        else:
+        if due_in > 0:
             return f"Due: {feeding_due_date_text} ({due_in} days) (Dusting: {self.get_coating()})"
+        if due_in < 0:
+            return f"Due: {feeding_due_date_text} (overdue {abs(due_in)} days) (Dusting: {self.get_coating()})."
 
     def get_feeding_due_in(self):
-        due_date = get_next_day(date.today(), self.feeding_day)
+        due_date = get_next_day(self.get_last_fed(), self.feeding_day)
         due_in = (due_date - date.today()).days
         return due_in
 
@@ -199,7 +201,7 @@ class Gecko(Animal):
 
         first_feed = get_next_day(self.feedings_started, self.feeding_day)
 
-        due_date = get_next_day(date.today(), self.feeding_day)
+        due_date = get_next_day(self.get_last_fed(), self.feeding_day)
 
         coating_patters = ['RP','CA','CA','NO']
 
