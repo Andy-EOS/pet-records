@@ -10,6 +10,10 @@ from django.utils.timezone import now
 def get_next_day(date_, weekday_):
     initial_date = date_
     delay = ((7 + weekday_) - initial_date.weekday()) % 7
+
+    if delay == 0:
+        delay += 7
+
     return initial_date + timedelta(days=delay)
 
 class Animal(models.Model):
