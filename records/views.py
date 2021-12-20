@@ -1,8 +1,11 @@
 """
 Django Views.
 """
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
+import time
 from operator import attrgetter
+import pandas as pd
+import json
 
 from django.http import HttpResponse
 from django.urls import reverse
@@ -335,5 +338,48 @@ def health_records(request):
         'headers': headers,
         'title': title,
         'form': form,
+    }
+    return HttpResponse(template.render(context, request))
+
+def weights_graph(request):
+
+
+    title = "Graph View"
+    
+    template = loader.get_template('records/graph.html')
+    
+
+    df = pd.DataFrame(AnimalHealth.objects.all().select_related().values('animal__animal_name', 'date', 'weight'))
+
+    df.rename(columns = {'animal__animal_name':'name'}, inplace = True)
+    df = df[df['weight'] > 0]
+
+    df = df.sort_values('date')
+    names = df['name'].unique()
+    data = []
+
+    for name in names:
+        pet = df[df['name'] == name]
+        dates = list(pet['date'])
+        for i in range(len(dates)):
+            dates[i] = time.mktime(dates[i].timetuple()) * 1000
+        weights = list(pet['weight'])
+        data_list = []
+        for i in range(len(weights)):
+            data_list.append([dates[i],weights[i]])
+        data_dict = {
+            "name": name,
+            "data": data_list
+        }
+        data.append(data_dict)
+
+    graph_data = json.dumps(data)
+
+
+
+    context = {
+        'title': title,
+        'graph_data': graph_data,
+
     }
     return HttpResponse(template.render(context, request))

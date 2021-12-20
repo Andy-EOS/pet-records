@@ -20,4 +20,5 @@ urlpatterns = [
     path('viewfeeding/', views.feeding_records, name='feeding_records'),
     path('viewcleaning/', views.cleaning_records, name='cleaning_records'),
     path('viewhealth', views.health_records, name='health_records'),
+    path('weightsGraph', views.weights_graph, name='weights_graph'),
 ]
