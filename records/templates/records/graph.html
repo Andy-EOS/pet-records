@@ -10,16 +10,22 @@
 
 
 
+<p>Note: Hold shift to pan.</p>
 
 
 
-
-<div id="container" style="min-width: 310px; height: 400; margin: 0 auto" class="border">
+<div id="container" style="min-width: 310px; height: 800; margin: 0 auto" class="border">
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function () {
         const chart = Highcharts.chart('container', {
             chart: {
-                type: 'line'
+                type: 'line',
+                zoomType: 'xy',
+                panning: {
+                    enabled: true,
+                    type: 'xy'
+                },
+                panKey: 'shift'
             },
             title: {
                 text: 'Animal Weights'
