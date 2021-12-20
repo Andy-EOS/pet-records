@@ -380,6 +380,7 @@ def weights_graph(request):
     context = {
         'title': title,
         'graph_data': graph_data,
+        'y_label' : "Weight (g)",
 
     }
     return HttpResponse(template.render(context, request))
@@ -425,6 +426,7 @@ def food_graph(request):
     context = {
         'title': title,
         'graph_data': graph_data,
+        'y_label' : "Number Eaten",
 
     }
     return HttpResponse(template.render(context, request))
