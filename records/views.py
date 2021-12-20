@@ -370,6 +370,9 @@ def weights_graph(request):
         data_dict = {
             "name": name,
             "data": data_list,
+            "tooltip": {
+                "valueSuffix": "g"
+            },
         }
         data.append(data_dict)
 
@@ -390,7 +393,7 @@ def food_graph(request):
 
     title = "Food Eaten Graph"
     
-    template = loader.get_template('records/graph.html')
+    template = loader.get_template('records/graph_2axis.html')
     
 
     df = pd.DataFrame(GeckoFeeding.objects.all().select_related().values('animal__animal_name', 'feeding_date', 'quantity_eaten'))
@@ -415,9 +418,42 @@ def food_graph(request):
             data_list.append([dates[i],eatens[i]])
         data_dict = {
             "name": name,
+            "yAxis": 0,
             "data": data_list,
+            "tooltip": {
+                "valueSuffix": " Food Eaten"
+            },
         }
         data.append(data_dict)
+
+    
+    df = pd.DataFrame(SnakeFeeding.objects.all().select_related().values('animal__animal_name', 'feeding_date'))
+    df.rename(columns = {'animal__animal_name':'name'}, inplace = True)
+    df.rename(columns = {'feeding_date':'date'}, inplace = True)
+    df = df.sort_values('date')
+    names = df['name'].unique()
+
+    for name in names:
+        pet = df[df['name'] == name]
+        dates = list(pet['date'])
+        i = 1
+        date_diffs = []
+        while i < len(dates):
+            date_diffs.append([time.mktime(dates[i].timetuple()) * 1000,(dates[i]-dates[i-1]).days])
+            i += 1
+        data_dict = {
+            "name": name,
+            "yAxis": 1,
+            "data": date_diffs,
+            "tooltip": {
+                "valueSuffix": " Days"
+            },
+        }
+        data.append(data_dict)
+
+
+
+
 
     graph_data = json.dumps(data)
 
@@ -426,7 +462,8 @@ def food_graph(request):
     context = {
         'title': title,
         'graph_data': graph_data,
-        'y_label' : "Number Eaten",
+        'y1_label' : "Number Eaten",
+        'y2_label' : "Days Between Feed",
 
     }
     return HttpResponse(template.render(context, request))
