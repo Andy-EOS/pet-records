@@ -344,7 +344,7 @@ def health_records(request):
 def weights_graph(request):
 
 
-    title = "Graph View"
+    title = "Animal Weights"
     
     template = loader.get_template('records/graph.html')
     
@@ -369,7 +369,52 @@ def weights_graph(request):
             data_list.append([dates[i],weights[i]])
         data_dict = {
             "name": name,
-            "data": data_list
+            "data": data_list,
+        }
+        data.append(data_dict)
+
+    graph_data = json.dumps(data)
+
+
+
+    context = {
+        'title': title,
+        'graph_data': graph_data,
+
+    }
+    return HttpResponse(template.render(context, request))
+
+def food_graph(request):
+
+
+    title = "Food Eaten Graph"
+    
+    template = loader.get_template('records/graph.html')
+    
+
+    df = pd.DataFrame(GeckoFeeding.objects.all().select_related().values('animal__animal_name', 'feeding_date', 'quantity_eaten'))
+
+    df.rename(columns = {'animal__animal_name':'name'}, inplace = True)
+    df.rename(columns = {'feeding_date':'date'}, inplace = True)
+    df.rename(columns = {'quantity_eaten':'eaten'}, inplace = True)
+    df = df[df['eaten'] > 0]
+
+    df = df.sort_values('date')
+    names = df['name'].unique()
+    data = []
+
+    for name in names:
+        pet = df[df['name'] == name]
+        dates = list(pet['date'])
+        for i in range(len(dates)):
+            dates[i] = time.mktime(dates[i].timetuple()) * 1000
+        eatens = list(pet['eaten'])
+        data_list = []
+        for i in range(len(eatens)):
+            data_list.append([dates[i],eatens[i]])
+        data_dict = {
+            "name": name,
+            "data": data_list,
         }
         data.append(data_dict)
 

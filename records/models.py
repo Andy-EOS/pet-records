@@ -255,12 +255,6 @@ class Gecko(Animal):
         cleaning_due_date = self.get_last_cleaned() + timedelta(weeks=self.cleaning_frequency)
         return (cleaning_due_date - date.today()).days
 
-        
-
-        
-
-
-
 class SnakeFeeding(models.Model):
     """
     Model to handle snake feeding database entries.
