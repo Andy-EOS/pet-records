@@ -378,12 +378,21 @@ def weights_graph(request):
 
     graph_data = json.dumps(data)
 
+    y_axis = """[
+                {
+                    title: {
+                        text: "Weight (g)",
+                    }
+                },
+            ],
+        """
+
 
 
     context = {
         'title': title,
         'graph_data': graph_data,
-        'y_label' : "Weight (g)",
+        'y_axis' : y_axis,
 
     }
     return HttpResponse(template.render(context, request))
@@ -393,11 +402,10 @@ def food_graph(request):
 
     title = "Food Eaten Graph"
     
-    template = loader.get_template('records/graph_2axis.html')
+    template = loader.get_template('records/graph.html')
     
-
+    # Data for gecko feeding.
     df = pd.DataFrame(GeckoFeeding.objects.all().select_related().values('animal__animal_name', 'feeding_date', 'quantity_eaten'))
-
     df.rename(columns = {'animal__animal_name':'name'}, inplace = True)
     df.rename(columns = {'feeding_date':'date'}, inplace = True)
     df.rename(columns = {'quantity_eaten':'eaten'}, inplace = True)
@@ -426,7 +434,7 @@ def food_graph(request):
         }
         data.append(data_dict)
 
-    
+    # Data for snake feeding.
     df = pd.DataFrame(SnakeFeeding.objects.all().select_related().values('animal__animal_name', 'feeding_date'))
     df.rename(columns = {'animal__animal_name':'name'}, inplace = True)
     df.rename(columns = {'feeding_date':'date'}, inplace = True)
@@ -458,12 +466,25 @@ def food_graph(request):
     graph_data = json.dumps(data)
 
 
+    y_axis = """[
+                    {
+                        title: {
+                            text: "Number Eaten",
+                        }
+                    },
+                    {
+                        opposite: true,
+                        title: {
+                            text: "Days Between Feed",
+                        }
+                    },
+                ],
+            """
+
 
     context = {
         'title': title,
         'graph_data': graph_data,
-        'y1_label' : "Number Eaten",
-        'y2_label' : "Days Between Feed",
-
+        'y_axis' : y_axis,
     }
     return HttpResponse(template.render(context, request))

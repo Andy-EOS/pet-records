@@ -39,11 +39,7 @@
                     format: '{value:%d/%b/%Y}'
                 }
             },
-            yAxis: {
-                title: {
-                    text: "{{y_label}}",
-                }
-            },
+            yAxis: {{y_axis|safe}}
             series: {{graph_data|safe}},
             pointStart: Date.UTC(2021, 0, 1),
             pointInterval: 31 * 24 * 3600 * 1000 // one month
