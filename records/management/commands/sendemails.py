@@ -2,8 +2,11 @@ from django.core.management.base import BaseCommand, CommandError
 from records.models import Snake, Gecko, Animal
 from django.core.mail import send_mail
 from datetime import date
+from records.management.commands.email_addresses import addresses as address_list
 
 class Command(BaseCommand):
+
+    
 
 
     
@@ -51,6 +54,6 @@ class Command(BaseCommand):
                 subject,
                 email_body,
                 'autoemails@theedgeofsanity.org.uk',
-                ['andy@theedgeofsanity.org.uk'],
+                address_list,
                 fail_silently=False,
             )

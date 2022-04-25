@@ -2,3 +2,4 @@ static
 machine_settings.py
 __pycache__
 .vscode
+email_addresses.py
