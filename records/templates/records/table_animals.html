@@ -17,13 +17,16 @@
       Feeding:
     </div>
     <div class="col">
-      Cleaning:
+      Full Clean:
+    </div>
+    <div class="col">
+      Spot Clean:
     </div>
     <div class="col">
       Edit:
     </div>
   </div>
-  {% for animal, feeding, cleaning, URL, id in animal_table_entries %}
+  {% for animal, feeding, full_clean, spot_clean, URL, id in animal_table_entries %}
   <div class="row" style="background-color:{% if forloop.counter|divisibleby:2 %}Gainsboro{% else %}Ghostwhite{% endif %}">
     <div class="col">
       {{animal}}
@@ -32,7 +35,10 @@
       {{feeding}}
     </div>
     <div class="col">
-      {{cleaning}}
+      {{full_clean}}
+    </div>
+    <div class="col">
+      {{spot_clean}}
     </div>
     <div class="col">
       <a href={% url URL animal_id=id %}>edit</a>

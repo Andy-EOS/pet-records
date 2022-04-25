@@ -27,6 +27,7 @@ class SnakeForm(ModelForm):
             'animal_name',
             'animal_dob',
             'cleaning_frequency',
+            'spot_cleaning_frequency',
             'feeding_frequency',
         )
         widgets = {
@@ -47,6 +48,7 @@ class GeckoForm(ModelForm):
             'animal_name',
             'animal_dob',
             'cleaning_frequency',
+            'spot_cleaning_frequency',
             'feeding_day',
             'feedings_started',
         )

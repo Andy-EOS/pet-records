@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from records.models import Snake, Gecko
+from records.models import Snake, Gecko, Animal
 from django.core.mail import send_mail
 from datetime import date
 
@@ -16,8 +16,13 @@ class Command(BaseCommand):
             if animal.get_feeding_due_in() < 2:
                 feeding_text.append(f"{animal.animal_name} {animal.get_feeding_due()}")
 
-            if animal.get_cleaning_due_in() < 7:
-                cleaning_text.append(f"{animal.animal_name} {animal.get_clean_due()}")
+            if animal.get_full_clean_due_in() < 7:
+                cleaning_text.append(f"{animal.animal_name} full clean {animal.get_full_clean_due()}")
+
+            else:
+
+                if animal.get_spot_clean_due_in() < 2:
+                    cleaning_text.append(f"{animal.animal_name} spot clean {animal.get_spot_clean_due()}")
 
 
         email_body = ""
@@ -46,6 +51,6 @@ class Command(BaseCommand):
                 subject,
                 email_body,
                 'autoemails@theedgeofsanity.org.uk',
-                ['andy@theedgeofsanity.org.uk','bex@theedgeofsanity.org.uk'],
+                ['andy@theedgeofsanity.org.uk'],
                 fail_silently=False,
             )

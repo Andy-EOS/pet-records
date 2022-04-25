@@ -31,6 +31,7 @@ class Animal(models.Model):
     ]
 
     cleaning_frequency = models.IntegerField("Cleaning frequency (weeks)", default=6)
+    spot_cleaning_frequency = models.IntegerField("Spot cleaning frequency (weeks)", default = 2)
 
     def __str__(self):
         return self.animal_name
@@ -45,6 +46,81 @@ class Animal(models.Model):
         m = str(dt.month).rjust(2,'0')
         y = str(dt.year).rjust(4,'0')
         return f"{d}/{m}/{y}"
+
+    def get_last_cleaned(self):
+        cleanings = AnimalCleaning.objects.filter(animal=self).order_by('-date_cleaned')[:1]
+        if cleanings:
+            return cleanings[0].date_cleaned
+        else:
+            return "No cleaning recorded."
+
+    def get_last_spot_cleaned(self):
+        spot_cleanings = AnimalCleaning.objects.filter(animal=self).filter(type_of_clean="SP").order_by('-date_cleaned')[:1]
+        if spot_cleanings:
+            return spot_cleanings[0].date_cleaned
+        else:
+            return "No spot cleans recorded."
+
+    def get_last_full_cleaned(self):
+       full_cleanings = AnimalCleaning.objects.filter(animal=self).filter(type_of_clean="FU").order_by('-date_cleaned')[:1]
+       if full_cleanings:
+           return full_cleanings[0].date_cleaned
+       else:
+           return "No full cleans recorded."
+
+  
+    def get_full_clean_due(self):
+        if self.get_last_full_cleaned() == "No full cleans recorded.":
+            return "No full cleans recorded."
+        full_cleaning_due_date = self.get_last_full_cleaned() + timedelta(weeks=self.cleaning_frequency)
+        d = str(full_cleaning_due_date.day).rjust(2,'0')
+        m = str(full_cleaning_due_date.month).rjust(2,'0')
+        y = str(full_cleaning_due_date.year).rjust(4,'0')
+        full_cleaning_due_date_text = f"{d}/{m}/{y}"
+
+        full_cleaning_due_in_days = self.get_full_clean_due_in()
+        full_cleaning_due_in_weeks = floor(full_cleaning_due_in_days / 7)
+
+        if full_cleaning_due_in_days > 0:
+            return f"Due: {full_cleaning_due_date_text} ({full_cleaning_due_in_weeks} weeks)"
+        elif full_cleaning_due_in_days < 0:
+            return f"Due: {full_cleaning_due_date_text}  (overdue {abs(full_cleaning_due_in_weeks)} weeks)"
+        else:
+            return "Full Clean due Today."
+
+    def get_spot_clean_due(self):
+        if self.get_full_clean_due_in() < self.spot_cleaning_frequency * 7:
+            return "Full clean almost due."
+        if self.get_last_spot_cleaned() == "No spot cleans recorded.":
+            return "No spot cleans recorded."
+        spot_cleaning_due_date = self.get_last_cleaned() + timedelta(weeks=self.spot_cleaning_frequency)
+        d = str(spot_cleaning_due_date.day).rjust(2,'0')
+        m = str(spot_cleaning_due_date.month).rjust(2,'0')
+        y = str(spot_cleaning_due_date.year).rjust(4,'0')
+        spot_cleaning_due_date_text = f"{d}/{m}/{y}"
+
+        spot_cleaning_due_in_days = self.get_spot_clean_due_in()
+
+        if spot_cleaning_due_in_days > 0:
+            return f"Due: {spot_cleaning_due_date_text} ({spot_cleaning_due_in_days} days)"
+        elif spot_cleaning_due_in_days < 0:
+            return f"Due: {spot_cleaning_due_date_text}  (overdue {abs(spot_cleaning_due_in_days)} days)"
+        else:
+            return "Spot Clean due Today."
+
+    def get_full_clean_due_in(self):
+        if self.get_last_full_cleaned() == "No cleaning recorded.":
+            return 0
+
+        cleaning_due_date = self.get_last_full_cleaned() + timedelta(weeks=self.cleaning_frequency)
+        return (cleaning_due_date - date.today()).days
+
+    def get_spot_clean_due_in(self):
+        if self.get_last_cleaned() == "No cleaning recorded.":
+            return 0
+
+        cleaning_due_date = self.get_last_cleaned() + timedelta(weeks=self.spot_cleaning_frequency)
+        return (cleaning_due_date - date.today()).days
 
 
 class Snake(Animal):
@@ -71,7 +147,7 @@ class Snake(Animal):
         return self._type
 
     def table_entry(self):
-        return (self.animal_name, self.get_feeding_due, self.get_clean_due(), f"edit_animal_entry_{self._type}", self.id)
+        return (self.animal_name, self.get_feeding_due, self.get_full_clean_due(), self.get_spot_clean_due(), f"edit_animal_entry_{self._type}", self.id)
 
     def get_last_fed(self):
         feedings = SnakeFeeding.objects.filter(animal=self).order_by('-feeding_date')[:1]
@@ -101,42 +177,7 @@ class Snake(Animal):
     def get_feeding_due_in(self):
         feeding_due_date = self.get_last_fed() + timedelta(days=self.feeding_frequency)
         return (feeding_due_date - date.today()).days
-
-    def get_last_cleaned(self):
-        feedings = AnimalCleaning.objects.filter(animal=self).order_by('-date_cleaned')[:1]
-        if feedings:
-            return feedings[0].date_cleaned
-        else:
-            return "No cleaning recorded."
-    
-    def get_clean_due(self):
-        if self.get_last_cleaned() == "No cleaning recorded.":
-            return "No cleaning recorded."
-        cleaning_due_date = self.get_last_cleaned() + timedelta(weeks=self.cleaning_frequency)
-        d = str(cleaning_due_date.day).rjust(2,'0')
-        m = str(cleaning_due_date.month).rjust(2,'0')
-        y = str(cleaning_due_date.year).rjust(4,'0')
-        cleaning_due_date_text = f"{d}/{m}/{y}"
-
-        cleaning_due_in_days = self.get_cleaning_due_in()
-        cleaning_due_in_weeks = floor(cleaning_due_in_days / 7)
-
-        if cleaning_due_in_days > 0:
-            return f"Due: {cleaning_due_date_text} ({cleaning_due_in_weeks} weeks)"
-        elif cleaning_due_in_days < 0:
-            return f"Due: {cleaning_due_date_text} (overdue {abs(cleaning_due_in_weeks)} weeks)"
-        else:
-            return "Cleaning  due Today."
-
-    def get_cleaning_due_in(self):
-        if self.get_last_cleaned() == "No cleaning recorded.":
-            return 0
-
-        cleaning_due_date = self.get_last_cleaned() + timedelta(weeks=self.cleaning_frequency)
-        return (cleaning_due_date - date.today()).days
         
-        cleaning_due_date = self.get_last_cleaned() + timedelta(weeks=self.cleaning_frequency)
-        return (cleaning_due_date - date.today()).days
 
 class Gecko(Animal):
 
@@ -166,7 +207,7 @@ class Gecko(Animal):
         return self._type
 
     def table_entry(self):
-        return (self.animal_name, self.get_feeding_due, self.get_clean_due(), f"edit_animal_entry_{self._type}", self.id)
+        return (self.animal_name, self.get_feeding_due, self.get_full_clean_due(), self.get_spot_clean_due(), f"edit_animal_entry_{self._type}", self.id)
 
     def get_last_fed(self):
         feedings = GeckoFeeding.objects.filter(animal=self).order_by('-feeding_date')[:1]
@@ -221,39 +262,6 @@ class Gecko(Animal):
 
         return ("ERROR!")
 
-
-    def get_last_cleaned(self):
-        feedings = AnimalCleaning.objects.filter(animal=self).order_by('-date_cleaned')[:1]
-        if feedings:
-            return feedings[0].date_cleaned
-        else:
-            return "No cleaning recorded."
-    
-    def get_clean_due(self):
-        if self.get_last_cleaned() == "No cleaning recorded.":
-            return "No cleaning recorded."
-        cleaning_due_date = self.get_last_cleaned() + timedelta(weeks=self.cleaning_frequency)
-        d = str(cleaning_due_date.day).rjust(2,'0')
-        m = str(cleaning_due_date.month).rjust(2,'0')
-        y = str(cleaning_due_date.year).rjust(4,'0')
-        cleaning_due_date_text = f"{d}/{m}/{y}"
-
-        cleaning_due_in_days = self.get_cleaning_due_in()
-        cleaning_due_in_weeks = floor(cleaning_due_in_days / 7)
-
-        if cleaning_due_in_days > 0:
-            return f"Due: {cleaning_due_date_text} ({cleaning_due_in_weeks} weeks)"
-        elif cleaning_due_in_days < 0:
-            return f"Due: {cleaning_due_date_text} (overdue {abs(cleaning_due_in_weeks)} weeks)"
-        else:
-            return "Cleaning  due Today."
-
-    def get_cleaning_due_in(self):
-        if self.get_last_cleaned() == "No cleaning recorded.":
-            return 0
-        
-        cleaning_due_date = self.get_last_cleaned() + timedelta(weeks=self.cleaning_frequency)
-        return (cleaning_due_date - date.today()).days
 
 class SnakeFeeding(models.Model):
     """
@@ -357,7 +365,7 @@ class GeckoFeeding(models.Model):
         else:
             quantity_eaten = self.quantity_eaten
         
-        output = f"Given: {self.quantity_given} {food_type_text}. Dusted in {food_dusting_text} \nEaten: {quantity_eaten}."
+        output = f"Given: {self.quantity_given} {food_type_text}. Dusted in {food_dusting_text} Eaten: {quantity_eaten}."
         return output
 
     def table_entry(self):
