@@ -91,8 +91,8 @@ class Animal(models.Model):
     def get_spot_clean_due(self):
         if self.get_full_clean_due_in() < self.spot_cleaning_frequency * 7:
             return "Full clean almost due."
-        if self.get_last_spot_cleaned() == "No spot cleans recorded.":
-            return "No spot cleans recorded."
+        if self.get_last_cleaned() == "No cleaning recorded.":
+            return "No cleaning recorded."
         spot_cleaning_due_date = self.get_last_cleaned() + timedelta(weeks=self.spot_cleaning_frequency)
         d = str(spot_cleaning_due_date.day).rjust(2,'0')
         m = str(spot_cleaning_due_date.month).rjust(2,'0')
@@ -109,7 +109,7 @@ class Animal(models.Model):
             return "Spot Clean due Today."
 
     def get_full_clean_due_in(self):
-        if self.get_last_full_cleaned() == "No cleaning recorded.":
+        if self.get_last_full_cleaned() == "No full cleans recorded.":
             return 0
 
         cleaning_due_date = self.get_last_full_cleaned() + timedelta(weeks=self.cleaning_frequency)
