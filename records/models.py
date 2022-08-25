@@ -7,14 +7,16 @@ from datetime import date, timedelta
 from django.db import models
 from django.utils.timezone import now
 
-def get_next_day(date_, weekday_):
-    initial_date = date_
-    delay = ((7 + weekday_) - initial_date.weekday()) % 7
-
-    if delay == 0:
-        delay += 7
-
-    return initial_date + timedelta(days=delay)
+def get_next_day(date_, weekday_, weekday2_):
+    return_date = date_+ timedelta(days=1)
+    loop_count = 0
+    while True:
+        if return_date.weekday() == weekday_ or return_date.weekday() == weekday2_:
+            return return_date
+        return_date = return_date + timedelta(days=1)
+        loop_count +=1
+        if loop_count > 100:
+            raise("get_next_day loop counter exceded")
 
 class Animal(models.Model):
     """
@@ -122,7 +124,6 @@ class Animal(models.Model):
         cleaning_due_date = self.get_last_cleaned() + timedelta(weeks=self.spot_cleaning_frequency)
         return (cleaning_due_date - date.today()).days
 
-
 class Snake(Animal):
 
     _type = models.CharField(max_length=2,default='SN')
@@ -178,7 +179,6 @@ class Snake(Animal):
         feeding_due_date = self.get_last_fed() + timedelta(days=self.feeding_frequency)
         return (feeding_due_date - date.today()).days
         
-
 class Gecko(Animal):
 
     _type = models.CharField(max_length=2,default='GK')
@@ -199,7 +199,8 @@ class Gecko(Animal):
         (SATURDAY, 'Saturday'),
         (SUNDAY, 'Sunday'),
     ]
-    feeding_day = models.IntegerField(choices=weekday_choices,default=5)
+    feeding_day = models.IntegerField(choices=weekday_choices,default=2)
+    feeding_day_2 = models.IntegerField(choices=weekday_choices,default=5)
     feedings_started = models.DateField(default=now)
 
 
@@ -220,7 +221,7 @@ class Gecko(Animal):
         if self.get_last_fed() == "No feedings recorded.":
             return "Never Fed."
 
-        due_date = get_next_day(self.get_last_fed(), self.feeding_day)
+        due_date = get_next_day(self.get_last_fed(), self.feeding_day, self.feeding_day_2)
 
         due_in = self.get_feeding_due_in()
 
@@ -237,31 +238,30 @@ class Gecko(Animal):
             return f"Due: {feeding_due_date_text} (overdue {abs(due_in)} days) (Dusting: {self.get_coating()})."
 
     def get_feeding_due_in(self):
-        due_date = get_next_day(self.get_last_fed(), self.feeding_day)
+        due_date = get_next_day(self.get_last_fed(), self.feeding_day, self.feeding_day_2)
         due_in = (due_date - date.today()).days
         return due_in
 
 
     def get_coating(self):
 
-        first_feed = get_next_day(self.feedings_started, self.feeding_day)
+        feedings = GeckoFeeding.objects.filter(animal=self).order_by('-feeding_date')
+        last_repton_counter = 0
+        for feeding in feedings:
+            if feeding.coating == 'RP':
+                break
+            else:
+                last_repton_counter +=1
 
-        due_date = get_next_day(self.get_last_fed(), self.feeding_day)
+        last_repton_mod = last_repton_counter % 4
 
-        coating_patters = ['RP','CA','CA','NO']
-
-        weeks_since = ceil((due_date - first_feed).days/7)
-
-        index = weeks_since % len(coating_patters)
-
-        code = coating_patters[index]
+        code = ['CA','CA','NO','RP'][last_repton_mod]
 
         for coating_code, coating_text in GeckoFeeding.FOOD_COATING_CHOICES:
             if code == coating_code:
                 return coating_text
 
         return ("ERROR!")
-
 
 class SnakeFeeding(models.Model):
     """

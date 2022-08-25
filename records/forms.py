@@ -50,6 +50,7 @@ class GeckoForm(ModelForm):
             'cleaning_frequency',
             'spot_cleaning_frequency',
             'feeding_day',
+            'feeding_day_2',
             'feedings_started',
         )
         widgets = {
