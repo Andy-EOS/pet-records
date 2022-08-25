@@ -51,7 +51,6 @@ class GeckoForm(ModelForm):
             'spot_cleaning_frequency',
             'feeding_day',
             'feeding_day_2',
-            'feedings_started',
         )
         widgets = {
             'animal_dob': DateEntry(),

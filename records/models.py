@@ -201,7 +201,6 @@ class Gecko(Animal):
     ]
     feeding_day = models.IntegerField(choices=weekday_choices,default=2)
     feeding_day_2 = models.IntegerField(choices=weekday_choices,default=5)
-    feedings_started = models.DateField(default=now)
 
 
     def get_animal_type(self):
