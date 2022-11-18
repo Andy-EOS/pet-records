@@ -26,18 +26,18 @@
       Edit:
     </div>
   </div>
-  {% for animal, feeding, full_clean, spot_clean, URL, id in animal_table_entries %}
+  {% for animal, feeding, full_clean, spot_clean, URL, id, feeding_cell_colour, spot_clean_cell_colour, full__clean_cell_colour in animal_table_entries %}
   <div class="row" style="background-color:{% if forloop.counter|divisibleby:2 %}Gainsboro{% else %}Ghostwhite{% endif %}">
     <div class="col">
       {{animal}}
     </div>
-    <div class="col">
+    <div class="col" style="background-color:{{feeding_cell_colour}};">
       {{feeding}}
     </div>
-    <div class="col">
+    <div class="col" style="background-color:{{full__clean_cell_colour}};">
       {{full_clean}}
     </div>
-    <div class="col">
+    <div class="col" style="background-color:{{spot_clean_cell_colour}};">
       {{spot_clean}}
     </div>
     <div class="col">

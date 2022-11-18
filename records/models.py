@@ -148,7 +148,36 @@ class Snake(Animal):
         return self._type
 
     def table_entry(self):
-        return (self.animal_name, self.get_feeding_due, self.get_full_clean_due(), self.get_spot_clean_due(), f"edit_animal_entry_{self._type}", self.id)
+        feeding_cell_colour = "default"
+        spot_clean_cell_colour = "default"
+        full_clean_cell_colour = "default"
+
+        feeding_due_in = self.get_feeding_due_in()
+        if feeding_due_in > 0:
+            feeding_cell_colour = "green"
+        if feeding_due_in == 0:
+            feeding_cell_colour = "yellow"
+        if feeding_due_in < 0:
+            feeding_cell_colour = "red"
+
+        spot_clean_due_in = self.get_spot_clean_due_in()
+        if spot_clean_due_in > 0:
+            spot_clean_cell_colour = "green"
+        if spot_clean_due_in == 0:
+            spot_clean_cell_colour = "yellow"
+        if spot_clean_due_in < 0:
+            spot_clean_cell_colour = "red"
+
+        full_clean_due_in = self.get_full_clean_due_in()
+        if full_clean_due_in > 0:
+            full_clean_cell_colour = "green"
+        if full_clean_due_in == 0:
+            full_clean_cell_colour = "yellow"
+        if full_clean_due_in < 0:
+            full_clean_cell_colour = "red"
+
+        return (self.animal_name, self.get_feeding_due, self.get_full_clean_due(), self.get_spot_clean_due(), f"edit_animal_entry_{self._type}", self.id
+        , feeding_cell_colour, spot_clean_cell_colour, full_clean_cell_colour)
 
     def get_last_fed(self):
         feedings = SnakeFeeding.objects.filter(animal=self).order_by('-feeding_date')[:1]
@@ -207,7 +236,37 @@ class Gecko(Animal):
         return self._type
 
     def table_entry(self):
-        return (self.animal_name, self.get_feeding_due, self.get_full_clean_due(), self.get_spot_clean_due(), f"edit_animal_entry_{self._type}", self.id)
+        feeding_cell_colour = "default"
+        spot_clean_cell_colour = "default"
+        full_clean_cell_colour = "default"
+
+        feeding_due_in = self.get_feeding_due_in()
+        if feeding_due_in > 0:
+            feeding_cell_colour = "green"
+        if feeding_due_in == 0:
+            feeding_cell_colour = "yellow"
+        if feeding_due_in < 0:
+            feeding_cell_colour = "red"
+
+        spot_clean_due_in = self.get_spot_clean_due_in()
+        if spot_clean_due_in > 0:
+            spot_clean_cell_colour = "green"
+        if spot_clean_due_in == 0:
+            spot_clean_cell_colour = "yellow"
+        if spot_clean_due_in < 0:
+            spot_clean_cell_colour = "red"
+
+        full_clean_due_in = self.get_full_clean_due_in()
+        if full_clean_due_in > 0:
+            full_clean_cell_colour = "green"
+        if full_clean_due_in == 0:
+            full_clean_cell_colour = "yellow"
+        if full_clean_due_in < 0:
+            full_clean_cell_colour = "red"
+
+
+        return (self.animal_name, self.get_feeding_due, self.get_full_clean_due(), self.get_spot_clean_due(), f"edit_animal_entry_{self._type}", self.id,
+        feeding_cell_colour, spot_clean_cell_colour, full_clean_cell_colour)
 
     def get_last_fed(self):
         feedings = GeckoFeeding.objects.filter(animal=self).order_by('-feeding_date')[:1]
