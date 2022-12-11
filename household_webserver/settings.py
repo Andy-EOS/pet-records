@@ -81,7 +81,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'HOST' : '',
-        'NAME' : 'petrecords',
+        'NAME' : 'household_webserver_db',
         'USER': machine_settings.DATABASE_USER,
         'PASSWORD' : machine_settings.DATABASE_PASSWORD,
     }
