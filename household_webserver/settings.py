@@ -33,6 +33,7 @@ ALLOWED_HOSTS = machine_settings.ALLOWED_HOSTS
 
 INSTALLED_APPS = [
     'records.apps.RecordsConfig',
+    'chores.apps.ChoresConfig',
     'crispy_forms',
     'crispy_bootstrap5',
     'django.contrib.admin',
