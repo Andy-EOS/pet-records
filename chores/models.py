@@ -17,3 +17,6 @@ class Chore(models.Model):
 
     def get_due_in_days(self):
         return (self.get_date_due() - date.today()).days
+
+    def table_entry(self):
+        return(self.chore_name, self.date_done, self.get_date_due, self.get_due_in_days, self.id)

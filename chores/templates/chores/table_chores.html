@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+{% load static %}
+<link href="{% static 'records/css/bootstrap.min.css' %}" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+<title>{{title}}</title>
+</head>
+<body>
+{% include 'chores/navbar.html' %}
+<div class="container-fluid">
+  <div class="row" style="background-color:grey">
+    <div class="col">
+      Chore:
+    </div>
+    <div class="col">
+      Date Done:
+    </div>
+    <div class="col">
+      Date Due:
+    </div>
+    <div class="col">
+      Due In:
+    </div>
+    <div class="col">
+      Edit:
+    </div>
+    <div class="col">
+      Done:
+    </div>
+   </div>
+  {% for chore, date_done, due_date, due_in, id in chore_table_entries %}
+  <div class="row" style="background-color:{% if forloop.counter|divisibleby:2 %}Gainsboro{% else %}Ghostwhite{% endif %}">
+    <div class="col">
+      {{chore}}
+    </div>
+    <div class="col">
+      {{date_done}}
+    </div>
+    <div class="col">
+      {{due_date}}
+    </div>
+    <div class="col">
+        {{due_in}}
+      </div>
+      <div class="col">
+        <a href={% url "edit_chore_entry" chore_id=id %}>edit</a>
+      </div>
+      <div class="col">
+        <a href={% url "enter_done_today" chore_id=id %}>done</a>
+      </div>
+  </div>
+  {% endfor %}
+</div>
+{{temp}}
+
+<script src="{% static 'records/js/bootstrap.bundle.min.js' %}" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+</body>
+</html>
