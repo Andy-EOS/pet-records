@@ -53,7 +53,7 @@ class Command(BaseCommand):
             send_mail(
                 subject,
                 email_body,
-                'autoemails@theedgeofsanity.org.uk',
+                'pets@theedgeofsanity.org.uk',
                 address_list,
                 fail_silently=False,
             )
