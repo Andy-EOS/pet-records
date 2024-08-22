@@ -219,6 +219,8 @@ class Gecko(Animal):
     FRIDAY = 4
     SATURDAY = 5
     SUNDAY = 6
+    NONE = 99
+
     weekday_choices = [
         (MONDAY, 'Monday'),
         (TUESDAY, 'Tuesday'),
@@ -228,8 +230,20 @@ class Gecko(Animal):
         (SATURDAY, 'Saturday'),
         (SUNDAY, 'Sunday'),
     ]
+
+    weekday_2_choices = [
+        (MONDAY, 'Monday'),
+        (TUESDAY, 'Tuesday'),
+        (WEDNESDAY, 'Wednesday'),
+        (THURSDAY, 'Thursday'),
+        (FRIDAY, 'Friday'),
+        (SATURDAY, 'Saturday'),
+        (SUNDAY, 'Sunday'),
+        (NONE, 'None'),
+    ]
+
     feeding_day = models.IntegerField(choices=weekday_choices,default=2)
-    feeding_day_2 = models.IntegerField(choices=weekday_choices,default=5)
+    feeding_day_2 = models.IntegerField(choices=weekday_2_choices,default=5)
 
 
     def get_animal_type(self):
@@ -327,7 +341,7 @@ class SnakeFeeding(models.Model):
     """
     animal = models.ForeignKey(Snake,on_delete=models.CASCADE)
     feeding_date = models.DateField()
-    quantity_fed = models.IntegerField()
+    quantity_fed = models.IntegerField(default=1)
 
     PINKY = 'PK'
     FUZZY = 'FZ'
@@ -335,6 +349,7 @@ class SnakeFeeding(models.Model):
     MEDIUM_MOUSE = 'MM'
     LARGE_MOUSE = 'LM'
     JUMBO_MOUSE = 'JM'
+    RAT_WEANER = 'RW'
 
     SNAKE_FEEDING_CHOICES = [
         (PINKY, 'Pinkie'),
@@ -343,6 +358,7 @@ class SnakeFeeding(models.Model):
         (MEDIUM_MOUSE, 'Medium Mouse'),
         (LARGE_MOUSE, 'Large Mouse'),
         (JUMBO_MOUSE, 'Jumbo Mouse'),
+        (RAT_WEANER, 'Rat Weaner'),
     ]
     type_of_food = models.CharField(max_length=2,choices=SNAKE_FEEDING_CHOICES,default=LARGE_MOUSE)
 
@@ -384,7 +400,7 @@ class GeckoFeeding(models.Model):
     GECKO_FEEDING_CHOICES = [
         (MEALWORMS, 'Mealworms'),
     ]
-    type_of_food = models.CharField(max_length=2,choices=GECKO_FEEDING_CHOICES)
+    type_of_food = models.CharField(max_length=2,choices=GECKO_FEEDING_CHOICES, default=MEALWORMS)
 
     REPTON = 'RP'
     CALCUIM = 'CA'
