@@ -19,7 +19,7 @@ from .forms import SnakeFeedingForm, GeckoFeedingForm, AnimalCleaningForm, Anima
 from.forms import SnakeForm, GeckoForm, CleaningFilterForm, BasicFilterForm
 
 def index(request):
-    animal_instances_list = list(Snake.objects.all()) + list(Gecko.objects.all())
+    animal_instances_list = list(Snake.objects.all())  #+ list(Gecko.objects.all())
     animal_instances_list.sort(key=lambda inst: inst.animal_name)
     animal_table_entries = list(map(lambda animal: animal.table_entry(),animal_instances_list))
 

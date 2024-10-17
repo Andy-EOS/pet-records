@@ -12,7 +12,7 @@ class Command(BaseCommand):
     
     def handle(self, *args, **options):
 
-        animals = list(Snake.objects.all()) + list(Gecko.objects.all())
+        animals = list(Snake.objects.all()) #+ list(Gecko.objects.all())
         feeding_text = []
         cleaning_text = []
         for animal in animals:
