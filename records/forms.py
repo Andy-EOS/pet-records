@@ -3,8 +3,8 @@ from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Div, Row, Column
 
-from .models import SnakeFeeding, GeckoFeeding, AnimalCleaning, AnimalHealth
-from .models import Animal, Snake, Gecko
+from .models import SnakeFeeding, AnimalCleaning, AnimalHealth
+from .models import Animal, Snake
 
 class DateEntry(DateInput):
     input_type = 'date'
@@ -34,29 +34,6 @@ class SnakeForm(ModelForm):
             'animal_dob': DateEntry(),
         }
 
-class GeckoForm(ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_id = 'gecko-entry'
-        self.helper.form_class = 'blueForms'
-        self.helper.add_input(Submit('submit', 'Submit'))
-
-    class Meta:
-        model = Gecko
-        fields = (
-            'animal_name',
-            'animal_dob',
-            'cleaning_frequency',
-            'spot_cleaning_frequency',
-            'feeding_day',
-            'feeding_day_2',
-        )
-        widgets = {
-            'animal_dob': DateEntry(),
-            'feedings_started': DateEntry(),
-        }
-
 class SnakeFeedingForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -72,28 +49,6 @@ class SnakeFeedingForm(ModelForm):
             'feeding_date',
             'type_of_food',
             'quantity_fed',
-        )
-        widgets = {
-            'feeding_date': DateEntry(),
-        }
-
-class GeckoFeedingForm(ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_id = 'gecko-feeding'
-        self.helper.form_class = 'blueForms'
-        self.helper.add_input(Submit('submit', 'Submit'))
-
-    class Meta:
-        model = GeckoFeeding
-        fields = (
-            'animal',
-            'feeding_date',
-            'type_of_food',
-            'coating',
-            'quantity_given',
-            'quantity_eaten',
         )
         widgets = {
             'feeding_date': DateEntry(),

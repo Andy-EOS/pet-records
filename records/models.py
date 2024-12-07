@@ -26,10 +26,8 @@ class Animal(models.Model):
     animal_dob = models.DateField()
 
     SNAKE = 'SN'
-    GECKO = 'GK'
     ANIMAL_TYPE_CHOICES = [
         (SNAKE, 'Snake'),
-        (GECKO, 'Gecko'),
     ]
 
     cleaning_frequency = models.IntegerField("Cleaning frequency (weeks)", default=6)
@@ -208,132 +206,7 @@ class Snake(Animal):
         feeding_due_date = self.get_last_fed() + timedelta(days=self.feeding_frequency)
         return (feeding_due_date - date.today()).days
         
-class Gecko(Animal):
 
-    _type = models.CharField(max_length=2,default='GK')
-
-    MONDAY = 0
-    TUESDAY = 1
-    WEDNESDAY = 2
-    THURSDAY = 3
-    FRIDAY = 4
-    SATURDAY = 5
-    SUNDAY = 6
-    NONE = 99
-
-    weekday_choices = [
-        (MONDAY, 'Monday'),
-        (TUESDAY, 'Tuesday'),
-        (WEDNESDAY, 'Wednesday'),
-        (THURSDAY, 'Thursday'),
-        (FRIDAY, 'Friday'),
-        (SATURDAY, 'Saturday'),
-        (SUNDAY, 'Sunday'),
-    ]
-
-    weekday_2_choices = [
-        (MONDAY, 'Monday'),
-        (TUESDAY, 'Tuesday'),
-        (WEDNESDAY, 'Wednesday'),
-        (THURSDAY, 'Thursday'),
-        (FRIDAY, 'Friday'),
-        (SATURDAY, 'Saturday'),
-        (SUNDAY, 'Sunday'),
-        (NONE, 'None'),
-    ]
-
-    feeding_day = models.IntegerField(choices=weekday_choices,default=2)
-    feeding_day_2 = models.IntegerField(choices=weekday_2_choices,default=5)
-
-
-    def get_animal_type(self):
-        return self._type
-
-    def table_entry(self):
-        feeding_cell_colour = "default"
-        spot_clean_cell_colour = "default"
-        full_clean_cell_colour = "default"
-
-        feeding_due_in = self.get_feeding_due_in()
-        if feeding_due_in > 0:
-            feeding_cell_colour = "green"
-        if feeding_due_in == 0:
-            feeding_cell_colour = "yellow"
-        if feeding_due_in < 0:
-            feeding_cell_colour = "red"
-
-        spot_clean_due_in = self.get_spot_clean_due_in()
-        if spot_clean_due_in > 0:
-            spot_clean_cell_colour = "green"
-        if spot_clean_due_in == 0:
-            spot_clean_cell_colour = "yellow"
-        if spot_clean_due_in < 0:
-            spot_clean_cell_colour = "red"
-
-        full_clean_due_in = self.get_full_clean_due_in()
-        if full_clean_due_in > 0:
-            full_clean_cell_colour = "green"
-        if full_clean_due_in == 0:
-            full_clean_cell_colour = "yellow"
-        if full_clean_due_in < 0:
-            full_clean_cell_colour = "red"
-
-
-        return (self.animal_name, self.get_feeding_due, self.get_full_clean_due(), self.get_spot_clean_due(), f"edit_animal_entry_{self._type}", self.id,
-        feeding_cell_colour, spot_clean_cell_colour, full_clean_cell_colour)
-
-    def get_last_fed(self):
-        feedings = GeckoFeeding.objects.filter(animal=self).order_by('-feeding_date')[:1]
-        if feedings:
-            return feedings[0].feeding_date
-        else:
-            return "No feedings recorded."
-    
-    def get_feeding_due(self):
-        if self.get_last_fed() == "No feedings recorded.":
-            return "Never Fed."
-
-        due_date = get_next_day(self.get_last_fed(), self.feeding_day, self.feeding_day_2)
-
-        due_in = self.get_feeding_due_in()
-
-        d = str(due_date.day).rjust(2,'0')
-        m = str(due_date.month).rjust(2,'0')
-        y = str(due_date.year).rjust(4,'0')
-        feeding_due_date_text = f"{d}/{m}/{y}"
-
-        if due_in == 0:
-            return f"Feeding due Today (Dusting: {self.get_coating()})."
-        if due_in > 0:
-            return f"Due: {feeding_due_date_text} ({due_in} days) (Dusting: {self.get_coating()})"
-        if due_in < 0:
-            return f"Due: {feeding_due_date_text} (overdue {abs(due_in)} days) (Dusting: {self.get_coating()})."
-
-    def get_feeding_due_in(self):
-        due_date = get_next_day(self.get_last_fed(), self.feeding_day, self.feeding_day_2)
-        due_in = (due_date - date.today()).days
-        return due_in
-
-
-    def get_coating(self):
-
-        feedings = GeckoFeeding.objects.filter(animal=self).order_by('-feeding_date')
-        last_repton_counter = 0
-        for feeding in feedings:
-            if feeding.coating == 'RP':
-                break
-            else:
-                last_repton_counter +=1
-
-        last_repton_mod = last_repton_counter % 4
-
-        code = ['CA','CA','NO','RP'][last_repton_mod]
-
-        for coating_code, coating_text in GeckoFeeding.FOOD_COATING_CHOICES:
-            if code == coating_code:
-                return coating_text
-
-        return ("ERROR!")
 
 class SnakeFeeding(models.Model):
     """
@@ -386,64 +259,7 @@ class SnakeFeeding(models.Model):
     def table_entry(self):
         return (self.date_text(), self.animal.animal_name, self.feeding_text(), f"edit_feeding_entry_{self.animal._type}", self.id)
 
-class GeckoFeeding(models.Model):
-    """
-    Model to handle gecko feeding database entries.
-    """
-    animal = models.ForeignKey(Gecko,on_delete=models.CASCADE)
-    feeding_date = models.DateField()
-    quantity_given = models.IntegerField()
-    quantity_eaten = models.IntegerField(null=True,blank=True)
 
-    MEALWORMS = 'MW'
-
-    GECKO_FEEDING_CHOICES = [
-        (MEALWORMS, 'Mealworms'),
-    ]
-    type_of_food = models.CharField(max_length=2,choices=GECKO_FEEDING_CHOICES, default=MEALWORMS)
-
-    REPTON = 'RP'
-    CALCUIM = 'CA'
-    NONE = 'NO'
-
-    FOOD_COATING_CHOICES = [
-        (REPTON, 'Repton'),
-        (CALCUIM, 'Calcium'),
-        (NONE, 'None'),
-    ]
-    coating = models.CharField(max_length=2,choices=FOOD_COATING_CHOICES,default=NONE)
-
-    def get_date(self):
-        return self.feeding_date
-
-    def date_text(self):
-        dt = self.feeding_date
-        d = str(dt.day).rjust(2,'0')
-        m = str(dt.month).rjust(2,'0')
-        y = str(dt.year).rjust(4,'0')
-        return f"{d}/{m}/{y}"
-
-    def feeding_text(self):
-        food_type_text = "ERROR!"
-        for food_code, food_type in self.GECKO_FEEDING_CHOICES:
-            if food_code == self.type_of_food:
-                food_type_text = food_type
-                break
-
-        food_dusting_text = "ERROR!"
-        for dusting_code, dusting_text in self.FOOD_COATING_CHOICES:
-            if dusting_code == self.coating:
-                food_dusting_text = dusting_text
-        if self.quantity_eaten == None:
-            quantity_eaten = "Not Recorded"
-        else:
-            quantity_eaten = self.quantity_eaten
-        
-        output = f"Given: {self.quantity_given} {food_type_text}. Dusted in {food_dusting_text} Eaten: {quantity_eaten}."
-        return output
-
-    def table_entry(self):
-        return (self.date_text(), self.animal.animal_name, self.feeding_text(), f"edit_feeding_entry_{self.animal._type}", self.id)
 
 class AnimalCleaning(models.Model):
     """
