@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from records.models import Snake, Gecko, Animal
+from records.models import Snake, Animal
 from django.core.mail import send_mail
 from datetime import date
 from records.management.commands.email_addresses import addresses as address_list

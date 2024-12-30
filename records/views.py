@@ -57,13 +57,7 @@ def snake_feeding_entry(request, feeding_id=None):
     if feeding_id:
         instance = SnakeFeeding.objects.get(pk=feeding_id)
     if request.method == 'POST':
-        form = SnakeFeedingForm(request.POST, instance=instance)
-        if form.is_valid():
-            form.save()
-            return redirect('feeding_records')
-    else:
-        form = SnakeFeedingForm(instance=instance)
-        if not feeding_id:
+        form = SnakeFeedingFSnake Feeding
             form.initial['feeding_date'] = date.today()
 
         context = {
