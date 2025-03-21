@@ -1,3 +1,4 @@
+import requests
 from django.core.management.base import BaseCommand, CommandError
 from records.models import Snake, Animal
 from django.core.mail import send_mail
