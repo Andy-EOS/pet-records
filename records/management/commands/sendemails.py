@@ -3,6 +3,7 @@ from records.models import Snake, Animal
 from django.core.mail import send_mail
 from datetime import date
 from records.management.commands.email_addresses import addresses as address_list
+from records.management.commands.email_addresses import gotify_token as gotify_token
 
 class Command(BaseCommand):
 
@@ -57,3 +58,9 @@ class Command(BaseCommand):
                 address_list,
                 fail_silently=False,
             )
+
+            resp = requests.post(f'https://gotify.eos1.uk/message?token={gotify_token}', json={
+            "message": email_body,
+            "priority": 5,
+            "title": subject,
+            })
