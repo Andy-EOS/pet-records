@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'household_webserver.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST' : '',
+        'HOST' : machine_settings.DATABASE_HOST,
         'NAME' : 'household_webserver_db',
         'USER': machine_settings.DATABASE_USER,
         'PASSWORD' : machine_settings.DATABASE_PASSWORD,
