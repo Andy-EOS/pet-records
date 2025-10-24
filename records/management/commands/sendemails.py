@@ -21,12 +21,12 @@ class Command(BaseCommand):
             if animal.get_feeding_due_in() < 2:
                 feeding_text.append(f"{animal.animal_name} {animal.get_feeding_due()}")
 
-            if animal.get_full_clean_due_in() < 7:
+            if (animal.get_full_clean_due_in() < 2 and animal.get_full_clean_due_in() >=0 ) or (animal.get_full_clean_due_in()<0 and abs(animal.get_full_clean_due_in())%7 ==0):
                 cleaning_text.append(f"{animal.animal_name} full clean {animal.get_full_clean_due()}")
 
             else:
 
-                if animal.get_spot_clean_due_in() < 2:
+                if (animal.get_spot_clean_due_in() < 2 and animal.get_spot_clean_due_in() >=0 ) or (animal.get_spot_clean_due_in()<0 and abs(animal.get_spot_clean_due_in())%7 ==0):
                     cleaning_text.append(f"{animal.animal_name} spot clean {animal.get_spot_clean_due()}")
 
 
