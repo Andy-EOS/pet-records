@@ -53,15 +53,19 @@ class Command(BaseCommand):
 
             email_text = f"Subject:{subject}\n\n{email_body}"
 
-            context = ssl.create_default_context()
-            with smtplib.SMTP(smtp_server, port) as server:
-                server.starttls(context=context)
-                server.login(sender_email, password)
-                server.sendmail(sender_email, address_list, email_text)
-                server.quit()
 
-            resp = requests.post(f'https://gotify.eos1.uk/message?token={gotify_token}', json={
-            "message": email_body,
-            "priority": 5,
-            "title": subject,
-            })
+        context = ssl.create_default_context()
+        with smtplib.SMTP(smtp_server, port) as server:
+            server.starttls(context=context)
+            server.login(sender_email, password)
+            server.sendmail(sender_email, address_list, email_text)
+            server.quit()
+
+
+
+        resp = requests.post(f'https://gotify.eos1.uk/message?token={gotify_token}', json={
+        "message": email_body,
+        "priority": 5,
+        "title": subject,
+        })
+
