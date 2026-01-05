@@ -51,7 +51,7 @@ class Command(BaseCommand):
             for text in cleaning_text:
                 email_body = email_body + text + "\n"
 
-            email_text = f"Subject:{subject}\n\n{email_body}"
+        email_text = f"Subject:{subject}\n\n{email_body}"
 
 
         context = ssl.create_default_context()
