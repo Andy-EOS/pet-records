@@ -3,4 +3,4 @@ gotify_token = 'AI9Gs.gxHyLnTAh'
 smtp_server = "smtp.protonmail.ch"
 port = 587
 sender_email = "pets@theedgeofsanity.org.uk"
-password = "QKGRCPW2VZRJ85YF"
+password = "8NRHXNFZ9P2A568D"
